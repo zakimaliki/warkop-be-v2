@@ -40,3 +40,47 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 /test/
+
+# Node modules
+node_modules/
+
+# Build output
+dist/
+build/
+out/
+.next/
+coverage/
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Env files
+.env
+.env.local
+.env.*.local
+
+# Vercel/Netlify
+.vercel/
+.netlify/
+
+# Logs
+logs/
+*.log
+
+# IDE/editor
+.vscode/
+.idea/
+*.swp
+
+# Others
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Firebase
+.firebase
+firebase.json
+
+# Next.js test folder
+test/.next/
