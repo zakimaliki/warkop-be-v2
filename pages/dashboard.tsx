@@ -1,8 +1,7 @@
-import { useEffect, useState } from 'react';
-import Link from 'next/link';
 import { useRouter } from 'next/router';
+import Link from 'next/link';
+import useSWR from 'swr';
 import { authService } from '../services/authService';
-import { Button } from '../components/atoms/Button';
 import { API_ENDPOINTS } from '../config/api';
 
 interface JobPosting {
@@ -17,44 +16,23 @@ interface JobPosting {
     };
 }
 
+const fetcher = (url: string) => {
+    const token = authService.getToken();
+    return fetch(url, {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    }).then(res => {
+        if (!res.ok) throw new Error('Failed to fetch data');
+        return res.json();
+    });
+};
+
 export default function DashboardPage() {
     const router = useRouter();
-    const [jobPostings, setJobPostings] = useState<JobPosting[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
+    const { data: jobPostings, error, isLoading } = useSWR<JobPosting[]>(API_ENDPOINTS.jobs, fetcher, { revalidateOnFocus: false });
 
-    useEffect(() => {
-        const fetchJobPostings = async () => {
-            try {
-                const token = authService.getToken();
-                if (!token) {
-                    throw new Error('No authentication token found');
-                }
-
-                const res = await fetch(API_ENDPOINTS.jobs, {
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    }
-                });
-
-                if (!res.ok) {
-                    throw new Error('Failed to fetch data');
-                }
-
-                const data = await res.json();
-                setJobPostings(data);
-            } catch (error) {
-                console.error("Error fetching job postings:", error);
-                setError(error instanceof Error ? error.message : 'An error occurred');
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchJobPostings();
-    }, []);
-
-    if (loading) {
+    if (isLoading) {
         return (
             <div className="min-h-screen bg-[#FAFAFA] flex items-center justify-center">
                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
@@ -65,7 +43,7 @@ export default function DashboardPage() {
     if (error) {
         return (
             <div className="min-h-screen bg-[#FAFAFA] flex items-center justify-center">
-                <div className="text-red-600">{error}</div>
+                <div className="text-red-600">{error.message}</div>
             </div>
         );
     }
@@ -100,7 +78,7 @@ export default function DashboardPage() {
                                 </tr>
                             </thead>
                             <tbody className="bg-white divide-y divide-gray-200">
-                                {jobPostings.map(job => (
+                                {jobPostings && jobPostings.map(job => (
                                     <tr key={job.id} className="hover:bg-gray-50 cursor-pointer" onClick={() => router.push(`/job/${job.id}`)}>
                                         <td className="px-6 py-4 whitespace-nowrap">
                                             <div className="text-sm font-medium text-gray-900">{job.title}</div>
@@ -116,7 +94,7 @@ export default function DashboardPage() {
                                         </td>
                                     </tr>
                                 ))}
-                                {jobPostings.length === 0 && (
+                                {jobPostings && jobPostings.length === 0 && (
                                     <tr>
                                         <td colSpan={4} className="px-6 py-4 text-center text-sm text-gray-500">
                                             No job postings found.
