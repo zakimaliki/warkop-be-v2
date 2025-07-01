@@ -104,13 +104,6 @@ export default function JobDetailPage() {
 
     return (
         <div className="min-h-screen bg-[#FAFAFA] flex flex-col">
-            <nav className="bg-white p-4 border-b border-gray-200">
-                <div className="container mx-auto">
-                    <Link href="/dashboard">
-                        <span className="text-lg font-bold cursor-pointer hover:text-gray-700 transition-colors">Warkop</span>
-                    </Link>
-                </div>
-            </nav>
             <main className="flex-1 flex flex-col lg:flex-row gap-8 px-8 py-8 max-w-7xl mx-auto w-full">
                 <section className="flex-1">
                     <h1 className="text-3xl font-bold mb-2">{jobData.title}</h1>
