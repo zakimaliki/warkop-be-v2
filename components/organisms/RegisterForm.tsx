@@ -7,13 +7,14 @@ import { authService } from '../../services/authService';
 import { Button } from '../atoms/Button';
 import { Input } from '../atoms/Input';
 import { userService } from '../../services/userService';
+import type { BackendUser } from '../../services/userService';
 
 export const RegisterForm = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [role, setRole] = useState('job_seeker');
+  const [role, setRole] = useState<BackendUser['role']>('job_seeker');
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -85,7 +86,7 @@ export const RegisterForm = () => {
               id="role"
               name="role"
               value={role}
-              onChange={(e) => setRole(e.target.value)}
+              onChange={(e) => setRole(e.target.value as BackendUser['role'])}
               className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
               required
             >
