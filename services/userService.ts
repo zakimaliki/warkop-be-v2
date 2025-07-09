@@ -6,6 +6,7 @@ export interface BackendUser {
   id: string;
   email: string;
   name?: string;
+  role?: 'job_seeker' | 'job_provider';
   // Add other fields from your backend user model
 }
 
